@@ -1,0 +1,46 @@
+package com.noteappexample.feature_note.presentation.util
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
+
+
+/**
+ * For supporting all screen sizes in Jetpack Compose
+ * If you need it just call this function on activity like
+ * val windowInfo = rememberWindowInfo()
+ * if(windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {compose this view}
+ * else {compose another view}
+ */
+@Composable
+fun rememberWindowInfo(): WindowInfo {
+    val configuration = LocalConfiguration.current
+    return WindowInfo(
+        screenWidthInfo = when {
+            configuration.screenWidthDp < 600 -> WindowInfo.WindowType.Compact
+            configuration.screenWidthDp < 840 -> WindowInfo.WindowType.Medium
+            else -> WindowInfo.WindowType.Expanded
+        },
+        screenHeightInfo = when {
+            configuration.screenWidthDp < 480 -> WindowInfo.WindowType.Compact
+            configuration.screenWidthDp < 900 -> WindowInfo.WindowType.Medium
+            else -> WindowInfo.WindowType.Expanded
+        },
+        screenWidth = configuration.screenWidthDp.dp,
+        screenHeight = configuration.screenHeightDp.dp
+    )
+}
+
+data class WindowInfo(
+    val screenWidthInfo: WindowType,
+    val screenHeightInfo: WindowType,
+    val screenWidth : Dp,
+    val screenHeight : Dp
+) {
+    sealed class WindowType {
+        object Compact: WindowType()
+        object Medium: WindowType()
+        object Expanded: WindowType()
+    }
+}
